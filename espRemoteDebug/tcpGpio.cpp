@@ -10,6 +10,7 @@ static uint16_t tcpPacketInd;
 static uint8_t replyString[32];
 static struct espconn tcpServer;
 static uint8_t tcpGpio_isConnected;
+static uint8_t tcpConnNum;
 
 /*---------------------------------------------------------------------------*/
 static void ICACHE_FLASH_ATTR
@@ -55,6 +56,12 @@ tcpserver_connectcb(void *arg)
 
   tcpGpio_isConnected = 1;
 
+  tcpConnNum++;
+  if(tcpConnNum > 4){
+    os_printf("system restart\r\n");
+    system_restart();
+  }
+  
   espconn_regist_recvcb(pespconn, shell_tcp_recvcb);
   espconn_regist_disconcb(pespconn, shell_tcp_disconcb);
 }
